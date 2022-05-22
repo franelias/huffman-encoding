@@ -2,7 +2,10 @@
 #include <stdlib.h>
 #include <string.h>
 
+#include "io.h"
+
 #define BUFFER 32
+
 typedef struct {
   char letter;
   int amount;
@@ -33,34 +36,32 @@ TreeNode newNode(LetterFreq data) {
   temp->left = temp->right = NULL;
   temp->weight = data.amount;
   temp->data = data;
-
   return temp;
 }
 
-TreeNode* readText(FILE* fp) {
-  int buff, amount = 0;
+TreeNode* readText(char* text, int length, int* amount) {
+  int buff, amountAux = 0;
   LetterFreq* aux = malloc(sizeof(LetterFreq) * 256);
 
   for (int i = 0; i < 256; i++) {
     aux[i].letter = i;
     aux[i].amount = 0;
   }
-
-  while ((buff = fgetc(fp)) != EOF) {
+  for (int letterPos = 0; letterPos < length; letterPos++) {
     // si esta insertando en un nuevo lugar incrementar la cantidad
-    if (!aux[buff].amount)
-      amount++;
-    aux[buff].amount++;
+    if (!aux[text[letterPos]].amount)
+      amountAux++;
+    aux[text[letterPos]].amount++;
   }
-  TreeNode* array = malloc(sizeof(TreeNode) * amount);
+  TreeNode* array = malloc(sizeof(TreeNode) * amountAux);
   for (int i = 0, j = 0; i < 256; i++) {
     if (aux[i].amount) {
       array[j++] = newNode(aux[i]);
     }
   }
 
-  qsort(array, amount, sizeof(TreeNode), cmpfunc);
-
+  qsort(array, amountAux, sizeof(TreeNode), cmpfunc);
+  *amount = amountAux;
   // for (int i = 0; i < amount; i++) printf("%c %d\n", array[i].letter, array[i].amount);
   return array;
 }
@@ -128,39 +129,53 @@ List array_to_list(TreeNode array[], int amount) {
   return listOfTrees;
 }
 
-void Tree_inOrder(TreeNode n, char prevPath[]) {
+void tree_in_order(TreeNode n, char prevPath[], char* results[]) {
   if (!n)
     return;
   n->path = malloc(sizeof(char) * strlen(prevPath) + 2);
   strcpy(n->path, prevPath);
   if (n->left) {
     strcat(n->path, "0");
-    Tree_inOrder(n->left, n->path);
+    tree_in_order(n->left, n->path, results);
   }
 
-  if (n->data.amount)
-    printf("%c %s\n", n->data.letter, n->path);
+  if (n->data.amount) {
+    // printf("%c %s\n", n->data.letter, n->path);
+    results[n->data.letter] = realloc(results[n->data.letter], sizeof(char) * strlen(n->path) + 1);
+    strcpy(results[n->data.letter], n->path);
+  }
   strcpy(n->path, prevPath);
   if (n->right) {
     strcat(n->path, "1");
-    Tree_inOrder(n->right, n->path);
+    tree_in_order(n->right, n->path, results);
   }
 }
 
-int main() {
-  FILE* fp = fopen("prueba.txt", "r");
+char* encode_text(char* text, int length, char* encodeLetters[]) {
+    char* encodedText = malloc(sizeof(char));
 
-  if (fp == NULL) {
-    printf("Error!");
-    return 1;
+  for (int i = 0; i < length; i++) {
+    encodedText = realloc(encodedText, sizeof(char) * strlen(encodedText) + strlen(encodeLetters[text[i]]) + 1);
+    strcat(encodedText, encodeLetters[text[i]]);
   }
+  return encodedText;
+}
 
-  TreeNode* array = readText(fp);
-  List listOfTrees = array_to_list(array, 7);
+int main() {
+  int* length = malloc(sizeof(int));
+  int* amount = malloc(sizeof(int));
 
-  TreeNode arbol = GenerateHuffmanTree(listOfTrees, 7);
-  Tree_inOrder(arbol, "");
-  fclose(fp);
+  char* text = readfile("prueba.txt", length);
+  char* encodeLetters[256];
+  for (int i = 0; i < 256; i++) encodeLetters[i] = malloc(sizeof(char));
 
+  TreeNode* array = readText(text, *length, amount);
+  List listOfTrees = array_to_list(array, *amount);
+
+  TreeNode arbol = GenerateHuffmanTree(listOfTrees, *amount);
+
+  tree_in_order(arbol, "", encodeLetters);
+  char* encodedText = encode_text(text, *length, encodeLetters);
+  printf("%s\n", encodedText);
   return 0;
 }
