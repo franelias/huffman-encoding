@@ -25,9 +25,9 @@ void push(List* list, TreeNode data) {
   *list = newNode;
 }
 
-List array_to_list(TreeNode array[], int amount) {
+List array_to_list(TreeNode *array, int length) {
   List listOfTrees = NULL;
-  for (int i = amount - 1; i >= 0; i--) {
+  for (int i = length - 1; i >= 0; i--) {
     push(&listOfTrees, array[i]);
   }
   return listOfTrees;
@@ -37,18 +37,16 @@ void destroy_list(List list) {
   if (list) {
     destroy_list(list->next);
     if (list->tree)
-      destroyTree(list->tree);
+      destroy_tree(list->tree);
     free(list);
   }
 }
 
 void remove_first(List* list) {
   List tmp;
-
   if (list == NULL || *list == NULL) return;
 
   tmp = *list;
-
   *list = (*list)->next;
 
   free(tmp);

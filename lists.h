@@ -14,7 +14,7 @@ void sorted_insert(List* head, List node);
 
 void push(List* list, TreeNode data);
 
-List array_to_list(TreeNode* array, int amount);
+List array_to_list(TreeNode *array, int length);
 
 void destroy_list(List list);
 

@@ -15,14 +15,14 @@ int cmpfunc(const void* a, const void* b) {
   return (*(TreeNode*)a)->weight > (*(TreeNode*)b)->weight;
 }
 
-TreeNode* read_text(char* text, int length, int* amount) {
+TreeNode* build_letters_array(char* fileContent, int contentLength, int* lettersAmount) {
   int buff, amountAux = 0;
   int aux[256] = {0};
-  for (int letterPos = 0; letterPos < length; letterPos++) {
+  for (int letterPos = 0; letterPos < contentLength; letterPos++) {
     // si esta insertando en un nuevo lugar incrementar la cantidad
-    if (!aux[text[letterPos]])
+    if (!aux[fileContent[letterPos]])
       amountAux++;
-    aux[text[letterPos]]++;
+    aux[fileContent[letterPos]]++;
   }
 
   TreeNode* array = malloc(sizeof(TreeNode) * amountAux);
@@ -33,7 +33,7 @@ TreeNode* read_text(char* text, int length, int* amount) {
   }
 
   qsort(array, amountAux, sizeof(TreeNode), cmpfunc);
-  *amount = amountAux;
+  *lettersAmount = amountAux;
 
   return array;
 }
@@ -47,11 +47,11 @@ TreeNode fuse_trees(int weight, TreeNode left, TreeNode right, char letter) {
   return newNode;
 }
 
-void destroyTree(TreeNode tree) {
+void destroy_tree(TreeNode tree) {
   if (tree) {
     TreeNode left = tree->left, right = tree->right;
-    destroyTree(left);
+    destroy_tree(left);
     free(tree);
-    destroyTree(right);
+    destroy_tree(right);
   }
 }

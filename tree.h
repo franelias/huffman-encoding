@@ -18,7 +18,7 @@ TreeNode new_node(char letter, int weight);
 /*
  * descripcion loca
  */
-TreeNode* read_text(char* text, int length, int* amount);
+TreeNode *build_letters_array(char *fileContent, int contentLength, int *lettersAmount);
 
 /*
  * descripcion loca
@@ -29,6 +29,6 @@ TreeNode fuse_trees(int weight, TreeNode left, TreeNode right, char letter);
 /*
  * descripcion loca
  */
-void destroyTree(TreeNode tree);
+void destroy_tree(TreeNode tree);
 
 #endif

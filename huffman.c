@@ -4,48 +4,52 @@
 #include <stdlib.h>
 #include <string.h>
 
-TreeNode generate_huffman_tree(List nodes, int amount) {
+TreeNode generate_huffman_tree(List letters, int length) {
   TreeNode newTree, huffmanTree;
   List firstNode, secondNode;
   int weight;
 
-  while (amount > 1) {
-    firstNode = nodes;
-    secondNode = nodes->next;
+  while (length > 1) {
+    firstNode = letters;
+    secondNode = letters->next;
 
     weight = firstNode->tree->weight + secondNode->tree->weight;
 
     newTree = fuse_trees(weight, firstNode->tree, secondNode->tree, '\0');
 
-    nodes = nodes->next->next;
+    letters = letters->next->next;
 
     List newNode = malloc(sizeof(nodeList));
     newNode->next = NULL;
     newNode->tree = newTree;
 
+    // secondNode->next=NULL;
+    // secondNode->tree=newTree;
+
     free(firstNode);
     free(secondNode);
 
-    sorted_insert(&nodes, newNode);
-    amount--;
+    sorted_insert(&letters, newNode);
+    length--;
   }
 
-  huffmanTree = nodes->tree;
+  huffmanTree = letters->tree;
 
-  free(nodes);
+  free(letters);
 
   return huffmanTree;
 }
 
-void tree_in_order(TreeNode node, char prevPath[], char* results[]) {
+void find_letters_path(TreeNode node, char prevPath[], char* results[]) {
   if (!node)
     return;
+
   char* newPath = malloc(sizeof(char) * strlen(prevPath) + 2);
 
   strcpy(newPath, prevPath);
   if (node->left) {
     strcat(newPath, "0");
-    tree_in_order(node->left, newPath, results);
+    find_letters_path(node->left, newPath, results);
   }
 
   if (node->letter != '\0') {
@@ -56,17 +60,25 @@ void tree_in_order(TreeNode node, char prevPath[], char* results[]) {
   strcpy(newPath, prevPath);
   if (node->right) {
     strcat(newPath, "1");
-    tree_in_order(node->right, newPath, results);
+    find_letters_path(node->right, newPath, results);
   }
   free(newPath);
 }
 
 char* encode_text(char* text, int length, char* encodeLetters[]) {
-  char* encodedText = malloc(sizeof(char));
+  int size = length;
+  int used = 0;
+  char* encodedText = malloc(sizeof(char) * size);
+
   strcpy(encodedText, "");
 
   for (int i = 0; i < length; i++) {
-    encodedText = realloc(encodedText, sizeof(char) * strlen(encodedText) + strlen(encodeLetters[text[i]]) + 1);
+    used += strlen(encodeLetters[text[i]]);
+    if (size <= used) {
+      size = (int)used * 1.1;
+      encodedText = realloc(encodedText, sizeof(char) * size);
+    }
+
     strcat(encodedText, encodeLetters[text[i]]);
   }
   strcat(encodedText, "\0");
@@ -74,49 +86,76 @@ char* encode_text(char* text, int length, char* encodeLetters[]) {
   return encodedText;
 }
 
-void encode_tree(TreeNode tree, char* encodedTree) {
-  if (!tree) return;
-  if (!tree->left && !tree->right) {
-    encodedTree = realloc(encodedTree, sizeof(char) * strlen(encodedTree) + 1);
-    strcat(encodedTree, "1");
+void encode_tree(TreeNode tree, char* encodedTree, char* letters) {
+  if (tree == NULL) {
     return;
   }
-  encodedTree = realloc(encodedTree, sizeof(char) * strlen(encodedTree) + 1);
-  strcat(encodedTree, "0");
-  encode_tree(tree->left, encodedTree);
-  encode_tree(tree->right, encodedTree);
-  strcat(encodedTree, "\0");
+
+  if (tree->left == NULL && tree->right == NULL) {
+    strcat(encodedTree, "1");
+
+    char* aux = malloc(sizeof(char) * 2);
+    aux[0] = tree->letter;
+    aux[1] = '\0';
+
+    strcat(letters, aux);
+    free(aux);
+  } else {
+    strcat(encodedTree, "0");
+  }
+
+  encode_tree(tree->left, encodedTree, letters);
+  encode_tree(tree->right, encodedTree, letters);
 }
 
-char* decode_text(char* encoded_text, TreeNode decoded_tree) {
-  TreeNode root = decoded_tree;
+char* decode_text(char* encodedText, TreeNode tree) {
+  TreeNode root = tree;
 
   char* decoded_text = malloc(sizeof(char) + 1);
 
   strcpy(decoded_text, "");
 
-  for (int i = 0; i < strlen(encoded_text); i++) {
-    if (decoded_tree->left == NULL && decoded_tree->right == NULL) {
+  for (int i = 0; i < strlen(encodedText); i++) {
+    if (tree->left == NULL && tree->right == NULL) {
       decoded_text = realloc(decoded_text, sizeof(char) * (strlen(decoded_text) + 1));
 
       // handlear error realloc
       char aux[2];
-      aux[0] = decoded_tree->letter;
+      aux[0] = tree->letter;
       aux[1] = '\0';
 
       strcat(decoded_text, aux);
 
-      decoded_tree = root;
+      tree = root;
     }
 
-    if (encoded_text[i] == '0') {
-      decoded_tree = decoded_tree->left;
+    if (encodedText[i] == '0') {
+      tree = tree->left;
     } else {
-      decoded_tree = decoded_tree->right;
+      tree = tree->right;
     }
   }
 
   strcat(decoded_text, "\0");
 
   return decoded_text;
+}
+
+// wip
+TreeNode decode_tree(char* encodedTree, int* encodedTreePos, char* encodedLeafs, int* encodedLeafsPos) {
+  TreeNode newNode = malloc(sizeof(TreeNode));
+  newNode->weight = 0;
+  if (encodedTree[*encodedTreePos] == '0') {
+    *encodedTreePos++;
+    newNode->left = decode_tree(encodedTree, encodedTreePos, encodedLeafs, encodedLeafsPos);
+    *encodedTreePos++;
+    newNode->right = decode_tree(encodedTree, encodedTreePos, encodedLeafs, encodedLeafsPos);
+    newNode->letter = '\0';
+  } else {
+    *encodedTreePos++;
+    newNode->right = newNode->left = NULL;
+    newNode->letter = encodedLeafs[*encodedLeafsPos];
+    *encodedLeafsPos++;
+  }
+  return newNode;
 }
