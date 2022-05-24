@@ -53,9 +53,8 @@ void find_letters_path(TreeNode node, char prevPath[], char* results[]) {
   }
 
   if (node->letter != '\0') {
-    // printf("%c %s\n", n->data.letter, newPath);
-    results[node->letter] = malloc(sizeof(char) * strlen(newPath) + 1);
-    strcpy(results[node->letter], newPath);
+    results[(unsigned char)node->letter] = malloc(sizeof(char) * strlen(newPath) + 1);
+    strcpy(results[(unsigned char)node->letter], newPath);
   }
   strcpy(newPath, prevPath);
   if (node->right) {
@@ -73,89 +72,109 @@ char* encode_text(char* text, int length, char* encodeLetters[]) {
   strcpy(encodedText, "");
 
   for (int i = 0; i < length; i++) {
-    used += strlen(encodeLetters[text[i]]);
+    used += strlen(encodeLetters[(unsigned char)text[i]]);
     if (size <= used) {
       size = (int)used * 1.1;
       encodedText = realloc(encodedText, sizeof(char) * size);
     }
 
-    strcat(encodedText, encodeLetters[text[i]]);
+    strcat(encodedText, encodeLetters[(unsigned char)text[i]]);
   }
   strcat(encodedText, "\0");
 
   return encodedText;
 }
 
+char* decode_text(char* encodedText, int encodedFileLength, TreeNode tree) {
+  TreeNode root = tree;
+
+  char* decodedText = malloc(sizeof(char) + 2);
+
+  strcpy(decodedText, "");
+  int size = 1;
+
+  for (int i = 0; i < strlen(encodedText); i++) {
+    if (encodedText[i] == '0') {
+      tree = tree->left;
+    } else {
+      tree = tree->right;
+    }
+
+    if (tree->left == NULL && tree->right == NULL) {
+      if (size <= strlen(decodedText) + 1) {
+        size = (int)((strlen(decodedText) + 2) * 1.1);
+        decodedText = realloc(decodedText, sizeof(char) * size);
+      }
+
+      char aux[2];
+      aux[0] = tree->letter;
+      aux[1] = '\0';
+
+      strcat(decodedText, aux);
+
+      tree = root;
+    }
+  }
+
+  strcat(decodedText, "\0");
+
+  return decodedText;
+}
+
 void encode_tree(TreeNode tree, char* encodedTree, char* letters) {
   if (tree == NULL) {
     return;
   }
+  char* aux = malloc(sizeof(char) * 2);
 
   if (tree->left == NULL && tree->right == NULL) {
     strcat(encodedTree, "1");
 
-    char* aux = malloc(sizeof(char) * 2);
     aux[0] = tree->letter;
     aux[1] = '\0';
 
     strcat(letters, aux);
-    free(aux);
   } else {
     strcat(encodedTree, "0");
   }
 
   encode_tree(tree->left, encodedTree, letters);
   encode_tree(tree->right, encodedTree, letters);
+  free(aux);
 }
 
-char* decode_text(char* encodedText, TreeNode tree) {
-  TreeNode root = tree;
+TreeNode decode_tree(char* encodedTree, int* encodedTreePos, char* leafs, int* leafsPos) {
+  TreeNode newNode = new_node('\0', 0);
 
-  char* decoded_text = malloc(sizeof(char) + 1);
-
-  strcpy(decoded_text, "");
-
-  for (int i = 0; i < strlen(encodedText); i++) {
-    if (tree->left == NULL && tree->right == NULL) {
-      decoded_text = realloc(decoded_text, sizeof(char) * (strlen(decoded_text) + 1));
-
-      // handlear error realloc
-      char aux[2];
-      aux[0] = tree->letter;
-      aux[1] = '\0';
-
-      strcat(decoded_text, aux);
-
-      tree = root;
-    }
-
-    if (encodedText[i] == '0') {
-      tree = tree->left;
-    } else {
-      tree = tree->right;
-    }
+  if (encodedTree[*encodedTreePos] == '\0' || leafs[*leafsPos] == '\0') {
+    return newNode;
   }
 
-  strcat(decoded_text, "\0");
-
-  return decoded_text;
-}
-
-// wip
-TreeNode decode_tree(char* encodedTree, int* encodedTreePos, char* encodedLeafs, int* encodedLeafsPos) {
-  TreeNode newNode = malloc(sizeof(TreeNode));
-  newNode->weight = 0;
   if (encodedTree[*encodedTreePos] == '0') {
-    *encodedTreePos++;
-    newNode->left = decode_tree(encodedTree, encodedTreePos, encodedLeafs, encodedLeafsPos);
-    *encodedTreePos++;
-    newNode->right = decode_tree(encodedTree, encodedTreePos, encodedLeafs, encodedLeafsPos);
-    newNode->letter = '\0';
+    *encodedTreePos = *encodedTreePos + 1;
+    newNode->left = decode_tree(encodedTree, encodedTreePos, leafs, leafsPos);
+    newNode->right = decode_tree(encodedTree, encodedTreePos, leafs, leafsPos);
   } else {
-    *encodedTreePos++;
-    newNode->right = newNode->left = NULL;
-    newNode->letter = encodedLeafs[*encodedLeafsPos];
-    *encodedLeafsPos++;
+    *encodedTreePos = *encodedTreePos + 1;
+    newNode->letter = leafs[*leafsPos];
+    *leafsPos = *leafsPos + 1;
   }
   return newNode;
 }
+
+void split(char* encodedTree, char** decodedTree, char** leafs) {
+  if (encodedTree) {
+    (*decodedTree) = strtok_r(encodedTree, "\n", leafs);
+  }
+}
+
+void print_arbol(TreeNode tree) {
+  if (tree == NULL) {
+    return;
+  }
+  print_arbol(tree->left);
+  printf("%c\n", tree->letter);
+  print_arbol(tree->right);
+}
+
+// strncpy

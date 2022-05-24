@@ -18,7 +18,7 @@ TreeNode new_node(char letter, int weight);
 /*
  * descripcion loca
  */
-TreeNode *build_letters_array(char *fileContent, int contentLength, int *lettersAmount);
+TreeNode *build_letters_array( char *fileContent, int contentLength, int *lettersAmount);
 
 /*
  * descripcion loca

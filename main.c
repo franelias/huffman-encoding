@@ -19,7 +19,6 @@ char* output_file_name(char* fileName) {
 }
 
 char* tree_file_name(char* fileName) {
-  printf("%ld\n",strlen(fileName));
   char* treeFileName = malloc(sizeof(char) * strlen(fileName) + 7);
   strcpy(treeFileName, fileName);
 
@@ -56,20 +55,20 @@ int main() {
   printf("Ingrese el nombre del archivo: ");
   scanf("%s", fileName);
 
-  char* fileContent = readfile(fileName, contentLength); // 9 allocs
+  char* fileContent = readfile(fileName, contentLength);  // 9 allocs
 
-  TreeNode* arrayOfTrees = build_letters_array(fileContent, *contentLength, lettersAmount); //41 allocs
-  List treeList = array_to_list(arrayOfTrees, *lettersAmount); // 40 allocs
+  TreeNode* arrayOfTrees = build_letters_array(fileContent, *contentLength, lettersAmount);  // 41 allocs
+  List treeList = array_to_list(arrayOfTrees, *lettersAmount);                               // 40 allocs
 
   free(arrayOfTrees);
 
-  TreeNode huffmanTree = generate_huffman_tree(treeList, *lettersAmount); // 78 allocs
-  
+  TreeNode huffmanTree = generate_huffman_tree(treeList, *lettersAmount);  // 78 allocs
+
   find_letters_path(huffmanTree, "", encodedLetters);
 
   char* encodedText = encode_text(fileContent, *contentLength, encodedLetters);
 
-  char* encodedTree = malloc(sizeof(char) * *lettersAmount * 2 );
+  char* encodedTree = malloc(sizeof(char) * *lettersAmount * 2);
   strcpy(encodedTree, "");
 
   char* lettersInOrder = malloc(sizeof(char) * (*lettersAmount) + 2);
@@ -81,6 +80,7 @@ int main() {
   strcpy(encodedTreeWithLetters, encodedTree);
   strcat(encodedTreeWithLetters, lettersInOrder);
 
+  
   generate_output_files(fileName, encodedText, encodedTreeWithLetters);
 
   for (int i = 0; i < 256; i++)
@@ -88,11 +88,11 @@ int main() {
   free(fileContent);
   free(contentLength);
   free(encodedText);
+  destroy_tree(huffmanTree);
   free(encodedTree);
   free(lettersInOrder);
   free(lettersAmount);
   free(encodedTreeWithLetters);
-  destroy_tree(huffmanTree);
-  
+
   return 0;
 }

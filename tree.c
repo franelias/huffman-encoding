@@ -16,13 +16,13 @@ int cmpfunc(const void* a, const void* b) {
 }
 
 TreeNode* build_letters_array(char* fileContent, int contentLength, int* lettersAmount) {
-  int buff, amountAux = 0;
+  unsigned int amountAux = 0;
   int aux[256] = {0};
   for (int letterPos = 0; letterPos < contentLength; letterPos++) {
     // si esta insertando en un nuevo lugar incrementar la cantidad
-    if (!aux[fileContent[letterPos]])
+    if (!aux[(unsigned char)fileContent[letterPos]])
       amountAux++;
-    aux[fileContent[letterPos]]++;
+    aux[(unsigned char)fileContent[letterPos]]++;
   }
 
   TreeNode* array = malloc(sizeof(TreeNode) * amountAux);
