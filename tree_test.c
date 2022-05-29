@@ -8,7 +8,7 @@
 void test_new_node() {
   TreeNode node1 = new_node('a', 1);
   assert(node1->letter == 'a');
-  assert(node1->left == node1->right == NULL);
+  assert(node1->left == NULL && node1->right == NULL);
 }
 
 void test_build_letters_array() {
@@ -37,7 +37,7 @@ void test_fuse_trees() {
 
   // test 3 caso con dos nodos vacio
   TreeNode result3 = fuse_trees(3, NULL, NULL, '\0');
-  assert(result3->left == result3->right == NULL);
+  assert(result3->left == NULL && result3->right == NULL);
 }
 
 void test_destroy_tree() {
@@ -49,12 +49,12 @@ void test_destroy_tree() {
   root1->left = left1;
   root1->right = right1;
 
-  destroy_tree(root1);
-  assert(root1 == right1 == left1 == NULL);
+  destroy_tree(&root1);
+  assert(root1 == NULL);
 
   // test 2 destruyo un arbol sin hijos
   TreeNode root2 = new_node('\0', 0);
-  destroy_tree(root2);
+  destroy_tree(&root2);
   assert(root2 == NULL);
 
   // test 3 destruyo un arbol con un hijo izq
@@ -62,26 +62,29 @@ void test_destroy_tree() {
   TreeNode root3 = new_node('\0', 0);
   TreeNode left3 = new_node('a', 0);
   root3->left = left3;
-  destroy_tree(root3);
-  assert(root3 == left3 == NULL);
+  destroy_tree(&root3);
+  assert(root3 == NULL);
 
   // test 4 destruyo un arbol con un hijo der
 
   TreeNode root4 = new_node('\0', 0);
   TreeNode right4 = new_node('a', 0);
   root4->right = right4;
-  destroy_tree(root4);
-  assert(root4 == right4 == NULL);
+  destroy_tree(&root4);
+  assert(root4 == NULL);
 
   // test 5 destruyo un arbol vacio (NULL)
   TreeNode root5 = NULL;
-  destroy_tree(root5);
+  destroy_tree(&root5);
   assert(root5 == NULL);
 }
 
 int main() {
   test_new_node();
+  test_build_letters_array();
   test_fuse_trees();
   test_destroy_tree();
+
+  printf("Todos los tests pasaron\n");
   return 0;
 }

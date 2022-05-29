@@ -47,11 +47,12 @@ TreeNode fuse_trees(int weight, TreeNode left, TreeNode right, char letter) {
   return newNode;
 }
 
-void destroy_tree(TreeNode tree) {
-  if (tree) {
-    TreeNode left = tree->left, right = tree->right;
-    destroy_tree(left);
-    free(tree);
-    destroy_tree(right);
+void destroy_tree(TreeNode* tree) {
+  if (*tree) {
+    TreeNode left = (*tree)->left, right = (*tree)->right;
+    destroy_tree(&left);
+    free(*tree);
+    *tree = NULL;
+    destroy_tree(&right);
   }
 }

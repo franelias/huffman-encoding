@@ -23,9 +23,6 @@ TreeNode generate_huffman_tree(List letters, int length) {
     newNode->next = NULL;
     newNode->tree = newTree;
 
-    // secondNode->next=NULL;
-    // secondNode->tree=newTree;
-
     free(firstNode);
     free(secondNode);
 
