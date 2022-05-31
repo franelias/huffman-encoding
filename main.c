@@ -44,16 +44,16 @@ void free_all(void** pointers, int amount) {
   }
 }
 
-void generate_output_files(char* fileName, char* encodedText, char* encodedTree) {
+void generate_output_files(char* fileName, char* encodedText, char* encodedTree, int length1, int length2) {
   char* outputFileName = encoded_file_name(fileName);
   char* treeFileName = tree_file_name(fileName);
 
   int* implodedTextLength = malloc(sizeof(int));
 
-  char* implodedText = implode(encodedText, strlen(encodedText), implodedTextLength);
+  char* implodedText = implode(encodedText, length1, implodedTextLength);
 
   writefile(outputFileName, implodedText, *implodedTextLength);
-  writefile(treeFileName, encodedTree, strlen(encodedTree));
+  writefile(treeFileName, encodedTree, length2);
 
   void* pointers[4] = {outputFileName, treeFileName, implodedText, implodedTextLength};
 
@@ -63,7 +63,7 @@ void generate_output_files(char* fileName, char* encodedText, char* encodedTree)
 void encoder(char* file) {
   int* contentLength = malloc(sizeof(int));
   int* lettersAmount = malloc(sizeof(int));
-  char* encodedLetters[256] = {NULL};
+  char* encodedLetters[256] = {};
 
   char* fileContent = readfile(file, contentLength);
 
@@ -73,10 +73,10 @@ void encoder(char* file) {
   free(arrayOfTrees);
 
   TreeNode huffmanTree = generate_huffman_tree(treeList, *lettersAmount);
-
-  find_letters_path(huffmanTree, "", encodedLetters);
-
-  char* encodedText = encode_text(fileContent, *contentLength, encodedLetters);
+  int* largeBits = malloc(sizeof(int));
+  *largeBits = 0;
+  find_letters_path(huffmanTree, "", encodedLetters, largeBits);
+  char* encodedText = encode_text(fileContent, *contentLength, encodedLetters, *largeBits);
 
   char* encodedTree = malloc(sizeof(char) * (*lettersAmount) * 2);
   strcpy(encodedTree, "");
@@ -84,19 +84,28 @@ void encoder(char* file) {
   char* lettersInOrder = malloc(sizeof(char) * (*lettersAmount) + 2);
 
   strcpy(lettersInOrder, "\n");
-  encode_tree(huffmanTree, encodedTree, lettersInOrder);
+  int *puntero=malloc(sizeof(int));
+  *puntero=1;
+  encode_tree(huffmanTree, encodedTree, lettersInOrder,puntero);
 
-  char* encodedTreeWithLetters = malloc(sizeof(char) * strlen(encodedTree) + sizeof(char) * strlen(lettersInOrder) + 1);
+  //lettersInOrder[*lettersAmount] = '\0';
+
+  printf("cantidad %ld\n", strlen(lettersInOrder));
+
+  char* encodedTreeWithLetters = malloc(sizeof(char) * strlen(encodedTree) + sizeof(char) * (*lettersAmount) + 1);
   strcpy(encodedTreeWithLetters, encodedTree);
-  strcat(encodedTreeWithLetters, lettersInOrder);
+  for(int k=0;k<*puntero;k++){
+    encodedTreeWithLetters[strlen(encodedTree)+k]=lettersInOrder[k];
+  }
+  //strcat(encodedTreeWithLetters, lettersInOrder);
 
-  generate_output_files(file, encodedText, encodedTreeWithLetters);
+  generate_output_files(file, encodedText, encodedTreeWithLetters, *largeBits, strlen(encodedTree) + (*puntero));
 
   void* pointers[7] = {fileContent, contentLength, encodedText, encodedTree, lettersInOrder, lettersAmount, encodedTreeWithLetters};
 
   free_all(pointers, 7);
   free_all((void**)encodedLetters, 256);
-  destroy_tree(huffmanTree);
+  destroy_tree(&huffmanTree);
 }
 
 void decoder(char* file) {
@@ -117,34 +126,36 @@ void decoder(char* file) {
   char* decodedTree;
   char* leafs;
 
-  split(encodedTree, &decodedTree, &leafs);
+  // split(encodedTree, &decodedTree, &leafs);
   int *contador1 = malloc(sizeof(int)), *contador2 = malloc(sizeof(int));
   *contador1 = *contador2 = 0;
 
-  TreeNode decodedTreeWL = decode_tree(decodedTree, contador1, leafs, contador2);
-  char* decodedText = decode_text(encodedFile, *encodedFileLength, decodedTreeWL);
+  TreeNode decodedTreeWL = decode_tree_aux(encodedTree, contador1, contador2);
+  int *decodedFileLength=malloc(sizeof(int));
+  char* decodedText = decode_text(encodedFile, *encodedFileLength, decodedTreeWL, decodedFileLength);
 
-  writefile(decoded_file_name(originalName), decodedText, strlen(decodedText));
+  writefile(decoded_file_name(originalName), decodedText, *decodedFileLength);
+  destroy_tree(&decodedTreeWL);
 
-  destroy_tree(decodedTreeWL);
+  // void* pointers[11] = {implodedFileLength, encodedTreeLength, encodedFileLength, implodedFile, encodedFile, decodedTree, contador1, contador2, decodedText, treeFileName};
 
-  void* pointers[11] = {implodedFileLength, encodedTreeLength, encodedFileLength, implodedFile, encodedFile, decodedTree, contador1, contador2, decodedText, treeFileName};
-
-  free_all(pointers, 11);
+  // free_all(pointers, 11);
 }
 
 int main(int argc, char** argv) {
-  if (argc < 3) {
-    exit(1);
-  }
+  encoder("rock.jpeg");
+  decoder("rock.jpeg.hf");
+  // if (argc < 3) {
+  //   exit(1);
+  // }
 
-  if (strcmp(argv[1], ENCODER_ALIAS) == 0) {
-    encoder(argv[2]);
-  } else if (strcmp(argv[1], DECODER_ALIAS) == 0) {
-    decoder(argv[2]);
-  } else {
-    printf("Invalid arguments");
-  }
+  // if (strcmp(argv[1], ENCODER_ALIAS) == 0) {
+  //   encoder(argv[2]);
+  // } else if (strcmp(argv[1], DECODER_ALIAS) == 0) {
+  //   decoder("prueba.txt.hf");
+  // } else {
+  //   printf("Invalid arguments");
+  // }
 
   return 0;
 }
