@@ -33,4 +33,6 @@ TreeNode fuse_trees(int weight, TreeNode left, TreeNode right, char letter);
  */
 void destroy_tree(TreeNode* tree);
 
+void print_arbol(TreeNode tree);
+
 #endif

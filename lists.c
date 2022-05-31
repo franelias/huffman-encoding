@@ -59,3 +59,10 @@ void remove_first(List* list) {
 
   free(tmp);
 }
+
+List print_list(List list) {
+  if (list == NULL) return NULL;
+
+  printf("%d %d\n",(unsigned char)list->tree->letter, list->tree->weight);
+  print_list(list->next);
+}

@@ -44,7 +44,7 @@ void free_all(void** pointers, int amount) {
   }
 }
 
-void generate_output_files(char* fileName, char* encodedText, char* encodedTree) {
+void generate_output_files(char* fileName, char* encodedText, char* encodedTree, int encodedTreeLength) {
   char* outputFileName = encoded_file_name(fileName);
   char* treeFileName = tree_file_name(fileName);
 
@@ -53,7 +53,7 @@ void generate_output_files(char* fileName, char* encodedText, char* encodedTree)
   char* implodedText = implode(encodedText, strlen(encodedText), implodedTextLength);
 
   writefile(outputFileName, implodedText, *implodedTextLength);
-  writefile(treeFileName, encodedTree, strlen(encodedTree));
+  writefile(treeFileName, encodedTree, encodedTreeLength);
 
   void* pointers[4] = {outputFileName, treeFileName, implodedText, implodedTextLength};
 
@@ -75,6 +75,7 @@ void encoder(char* file) {
   TreeNode huffmanTree = generate_huffman_tree(treeList, *lettersAmount);
   int* largeBits = malloc(sizeof(int));
   *largeBits = 0;
+
   find_letters_path(huffmanTree, "", encodedLetters, largeBits);
   char* encodedText = encode_text(fileContent, *contentLength, encodedLetters, *largeBits);
 
@@ -84,13 +85,18 @@ void encoder(char* file) {
   char* lettersInOrder = malloc(sizeof(char) * (*lettersAmount) + 2);
 
   strcpy(lettersInOrder, "\n");
+
   encode_tree(huffmanTree, encodedTree, lettersInOrder);
 
-  char* encodedTreeWithLetters = malloc(sizeof(char) * strlen(encodedTree) + sizeof(char) * strlen(lettersInOrder) + 1);
+  printf("%s\n",lettersInOrder);
+
+  char* encodedTreeWithLetters = malloc(sizeof(char) * 10000 + sizeof(char) * (*lettersAmount) + 1);
   strcpy(encodedTreeWithLetters, encodedTree);
   strcat(encodedTreeWithLetters, lettersInOrder);
 
-  generate_output_files(file, encodedText, encodedTreeWithLetters);
+  int a = (*lettersAmount) + strlen(encodedTree);
+
+  generate_output_files(file, encodedText, encodedTreeWithLetters, a);
 
   void* pointers[7] = {fileContent, contentLength, encodedText, encodedTree, lettersInOrder, lettersAmount, encodedTreeWithLetters};
 
@@ -134,17 +140,19 @@ void decoder(char* file) {
 }
 
 int main(int argc, char** argv) {
-  if (argc < 3) {
-    exit(1);
-  }
+   encoder("grr.jpeg");
+   decoder("grr.jpeg.hf");
+  // if (argc < 3) {
+  //   exit(1);
+  // }
 
-  if (strcmp(argv[1], ENCODER_ALIAS) == 0) {
-    encoder(argv[2]);
-  } else if (strcmp(argv[1], DECODER_ALIAS) == 0) {
-    decoder("prueba.txt.hf");
-  } else {
-    printf("Invalid arguments");
-  }
+  // if (strcmp(argv[1], ENCODER_ALIAS) == 0) {
+  //   encoder(argv[2]);
+  // } else if (strcmp(argv[1], DECODER_ALIAS) == 0) {
+  //   decoder("prueba.txt.hf");
+  // } else {
+  //   printf("Invalid arguments");
+  // }
 
   return 0;
 }

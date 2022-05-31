@@ -7,7 +7,7 @@ TreeNode new_node(char letter, int weight) {
   TreeNode temp = malloc(sizeof(node));
   temp->left = temp->right = NULL;
   temp->weight = weight;
-  temp->letter = letter;
+  temp->letter =(unsigned char) letter;
   return temp;
 }
 
@@ -55,4 +55,16 @@ void destroy_tree(TreeNode* tree) {
     *tree = NULL;
     destroy_tree(&right);
   }
+}
+
+void print_arbol(TreeNode tree) {
+  if (tree == NULL) {
+    return;
+  }
+  print_arbol(tree->left);
+  if (tree->left == NULL && tree->right == NULL) {
+  printf("%d %d\n", (unsigned char)tree->letter, tree->weight);
+  }
+
+  print_arbol(tree->right);
 }

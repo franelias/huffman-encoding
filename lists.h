@@ -39,4 +39,6 @@ void destroy_list(List list);
 */
 void remove_first(List* list);
 
+List print_list(List list);
+
 #endif
