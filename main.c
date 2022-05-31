@@ -73,10 +73,10 @@ void encoder(char* file) {
   free(arrayOfTrees);
 
   TreeNode huffmanTree = generate_huffman_tree(treeList, *lettersAmount);
-
-  find_letters_path(huffmanTree, "", encodedLetters);
-
-  char* encodedText = encode_text(fileContent, *contentLength, encodedLetters);
+  int* largeBits = malloc(sizeof(int));
+  *largeBits = 0;
+  find_letters_path(huffmanTree, "", encodedLetters, largeBits);
+  char* encodedText = encode_text(fileContent, *contentLength, encodedLetters, *largeBits);
 
   char* encodedTree = malloc(sizeof(char) * (*lettersAmount) * 2);
   strcpy(encodedTree, "");
@@ -96,7 +96,7 @@ void encoder(char* file) {
 
   free_all(pointers, 7);
   free_all((void**)encodedLetters, 256);
-  destroy_tree(huffmanTree);
+  destroy_tree(&huffmanTree);
 }
 
 void decoder(char* file) {
@@ -126,7 +126,7 @@ void decoder(char* file) {
 
   writefile(decoded_file_name(originalName), decodedText, strlen(decodedText));
 
-  destroy_tree(decodedTreeWL);
+  destroy_tree(&decodedTreeWL);
 
   void* pointers[11] = {implodedFileLength, encodedTreeLength, encodedFileLength, implodedFile, encodedFile, decodedTree, contador1, contador2, decodedText, treeFileName};
 
@@ -141,7 +141,7 @@ int main(int argc, char** argv) {
   if (strcmp(argv[1], ENCODER_ALIAS) == 0) {
     encoder(argv[2]);
   } else if (strcmp(argv[1], DECODER_ALIAS) == 0) {
-    decoder(argv[2]);
+    decoder("prueba.txt.hf");
   } else {
     printf("Invalid arguments");
   }

@@ -31,6 +31,6 @@ TreeNode fuse_trees(int weight, TreeNode left, TreeNode right, char letter);
 /*
   A partir de un puntero a nodo, libera la memoria del arbol
  */
-void destroy_tree(TreeNode *tree);
+void destroy_tree(TreeNode* tree);
 
 #endif

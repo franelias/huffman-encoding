@@ -37,7 +37,7 @@ TreeNode generate_huffman_tree(List letters, int length) {
   return huffmanTree;
 }
 
-void find_letters_path(TreeNode node, char prevPath[], char* results[]) {
+void find_letters_path(TreeNode node, char prevPath[], char* results[], int * largeBits) {
   if (!node)
     return;
 
@@ -46,38 +46,40 @@ void find_letters_path(TreeNode node, char prevPath[], char* results[]) {
   strcpy(newPath, prevPath);
   if (node->left) {
     strcat(newPath, "0");
-    find_letters_path(node->left, newPath, results);
+    find_letters_path(node->left, newPath, results, largeBits);
   }
 
   if (node->letter != '\0') {
-    results[(unsigned char)node->letter] = malloc(sizeof(char) * strlen(newPath) + 1);
+    int largeNewPath = strlen(newPath);
+    results[(unsigned char)node->letter] = malloc(sizeof(char) * largeNewPath + 1);
     strcpy(results[(unsigned char)node->letter], newPath);
+    *largeBits += largeNewPath * node->weight;
   }
   strcpy(newPath, prevPath);
   if (node->right) {
     strcat(newPath, "1");
-    find_letters_path(node->right, newPath, results);
+    find_letters_path(node->right, newPath, results, largeBits);
   }
   free(newPath);
 }
 
-char* encode_text(char* text, int length, char* encodeLetters[]) {
-  int size = length;
-  int used = 0;
-  char* encodedText = malloc(sizeof(char) * size);
+char* encode_text(char* text, int length, char* encodedLetters[], int size) {
+  char* encodedText = malloc(sizeof(char) * size +1);
 
   strcpy(encodedText, "");
+  int tempSize =0;
+
+  int encodedLettersLength[256] = {0};
 
   for (int i = 0; i < length; i++) {
-    used += strlen(encodeLetters[(unsigned char)text[i]]);
-    if (size <= used) {
-      size = (int)used * 1.1;
-      encodedText = realloc(encodedText, sizeof(char) * size);
-    }
+    strcpy(encodedText + tempSize, encodedLetters[(unsigned char)text[i]]);
 
-    strcat(encodedText, encodeLetters[(unsigned char)text[i]]);
+    if (encodedLettersLength[(unsigned char)text[i]] == 0) {
+        encodedLettersLength[(unsigned char)text[i]] =  strlen(encodedLetters[(unsigned char)text[i]]);
+    } 
+
+     tempSize += encodedLettersLength[(unsigned char)text[i]];
   }
-  strcat(encodedText, "\0");
 
   return encodedText;
 }
@@ -87,10 +89,9 @@ char* decode_text(char* encodedText, int encodedFileLength, TreeNode tree) {
 
   char* decodedText = malloc(sizeof(char) + 2);
 
-  strcpy(decodedText, "");
   int size = 1;
-
-  for (int i = 0; i < strlen(encodedText); i++) {
+  int tempSize = 0;
+  for (int i = 0; i < encodedFileLength; i++) {
     if (encodedText[i] == '0') {
       tree = tree->left;
     } else {
@@ -98,22 +99,18 @@ char* decode_text(char* encodedText, int encodedFileLength, TreeNode tree) {
     }
 
     if (tree->left == NULL && tree->right == NULL) {
-      if (size <= strlen(decodedText) + 1) {
-        size = (int)((strlen(decodedText) + 2) * 1.1);
+      if (size <= tempSize + 1) {
+        size = (int)((tempSize + 2) * 1.5);
         decodedText = realloc(decodedText, sizeof(char) * size);
       }
 
-      char aux[2];
-      aux[0] = tree->letter;
-      aux[1] = '\0';
-
-      strcat(decodedText, aux);
+      decodedText[tempSize++]  = tree->letter;
 
       tree = root;
     }
   }
 
-  strcat(decodedText, "\0");
+  decodedText[tempSize++] = '\0';
 
   return decodedText;
 }
@@ -173,5 +170,3 @@ void print_arbol(TreeNode tree) {
   printf("%c\n", tree->letter);
   print_arbol(tree->right);
 }
-
-// strncpy

@@ -45,7 +45,7 @@ void destroy_list(List list) {
   if (list) {
     destroy_list(list->next);
     if (list->tree)
-      destroy_tree(list->tree);
+      destroy_tree(&(list->tree));
     free(list);
   }
 }
