@@ -13,7 +13,7 @@ TreeNode generate_huffman_tree(List letters, int length);
     A partir de un arbol de huffman, recorre el arbol inorden para guardar en
     un array de punteros el string codificado de cada letra
 */
-void find_letters_path(TreeNode node, char *prevPath, char **results, int *largeBits);
+void find_letters_path(TreeNode tree, char *arr, int top, char **results);
 
 /*
 A partir de un texto y el largo del mismo, devuelve un puntero de char con las letras codificadas
@@ -44,5 +44,5 @@ TreeNode decode_tree(char *encodedTree, int *encodedTreePos, char *leafs, int *l
         - las letras del arbol
 */
 void split(char *encodedTree, char **decodedTree, char **leafs);
-
+void printCodes(TreeNode tree, int *arr, int top);
 #endif

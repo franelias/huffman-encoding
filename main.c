@@ -76,7 +76,17 @@ void encoder(char* file) {
   int* largeBits = malloc(sizeof(int));
   *largeBits = 0;
 
-  find_letters_path(huffmanTree, "", encodedLetters, largeBits);
+  // funcion que devuelva el camino mas largo
+
+  char arr[8], top = 0;
+
+  find_letters_path(huffmanTree, arr, top, encodedLetters);
+
+  // int arr[256], top = 0;
+
+  // printCodes(huffmanTree, arr, top);
+
+  // find_letters_path(huffmanTree, "", encodedLetters, largeBits);
   char* encodedText = encode_text(fileContent, *contentLength, encodedLetters, *largeBits);
 
   char* encodedTree = malloc(sizeof(char) * (*lettersAmount) * 2);
@@ -88,7 +98,7 @@ void encoder(char* file) {
 
   encode_tree(huffmanTree, encodedTree, lettersInOrder);
 
-  printf("%s\n",lettersInOrder);
+  printf("%s\n", lettersInOrder);
 
   char* encodedTreeWithLetters = malloc(sizeof(char) * 10000 + sizeof(char) * (*lettersAmount) + 1);
   strcpy(encodedTreeWithLetters, encodedTree);
@@ -140,8 +150,8 @@ void decoder(char* file) {
 }
 
 int main(int argc, char** argv) {
-   encoder("grr.jpeg");
-   decoder("grr.jpeg.hf");
+  encoder("grr.jpeg");
+  decoder("grr.jpeg.hf");
   // if (argc < 3) {
   //   exit(1);
   // }

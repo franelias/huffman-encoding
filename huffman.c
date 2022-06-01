@@ -37,30 +37,24 @@ TreeNode generate_huffman_tree(List letters, int length) {
   return huffmanTree;
 }
 
-void find_letters_path(TreeNode node, char prevPath[], char* results[], int* largeBits) {
-  if (!node)
-    return;
-
-  char* newPath = malloc(sizeof(char) * strlen(prevPath) + 2);
-
-  strcpy(newPath, prevPath);
-  if (node->left) {
-    strcat(newPath, "0");
-    find_letters_path(node->left, newPath, results, largeBits);
+void find_letters_path(TreeNode tree, char arr[], int top, char* results[]) {
+  if (tree->left) {
+    arr[top] = '0';
+    find_letters_path(tree->left, arr, top + 1, results);
   }
 
-  if (!node->left && !node->right) {
-    int largeNewPath = strlen(newPath);
-    results[(unsigned char)node->letter] = malloc(sizeof(char) * largeNewPath + 1);
-    strcpy(results[(unsigned char)node->letter], newPath);
-    *largeBits += largeNewPath * node->weight;
+  if (tree->right) {
+    arr[top] = '1';
+    find_letters_path(tree->right, arr, top + 1, results);
   }
-  strcpy(newPath, prevPath);
-  if (node->right) {
-    strcat(newPath, "1");
-    find_letters_path(node->right, newPath, results, largeBits);
+
+  if (tree->left == NULL && tree->right == NULL) {
+    arr[top+1] = '\0';
+    char* path = malloc(sizeof(char) * strlen(arr) + 1);
+
+    strcpy(path, arr);
+    results[(unsigned char)tree->letter] = path;
   }
-  free(newPath);
 }
 
 char* encode_text(char* text, int length, char* encodedLetters[], int size) {
@@ -116,7 +110,7 @@ char* decode_text(char* encodedText, int encodedFileLength, TreeNode tree) {
   return decodedText;
 }
 
-//sacar
+// sacar
 int kk = 1;
 
 void encode_tree(TreeNode tree, char* encodedTree, char* letters) {
@@ -128,7 +122,7 @@ void encode_tree(TreeNode tree, char* encodedTree, char* letters) {
   if (tree->left == NULL && tree->right == NULL) {
     strcat(encodedTree, "1");
 
-    letters[kk] = (unsigned char) tree->letter;
+    letters[kk] = (unsigned char)tree->letter;
     kk++;
   } else {
     strcat(encodedTree, "0");
