@@ -7,7 +7,7 @@ TreeNode new_node(char letter, int weight) {
   TreeNode temp = malloc(sizeof(node));
   temp->left = temp->right = NULL;
   temp->weight = weight;
-  temp->letter = (unsigned char)letter;
+  temp->letter = letter;
   return temp;
 }
 
@@ -48,7 +48,7 @@ TreeNode* build_letters_array(char* fileContent, int contentLength, int* letters
   TreeNode* array = malloc(sizeof(TreeNode) * (*lettersAmount));
   for (int i = 0, j = 0; i < 256; i++) {
     if (letters[i]) {
-      array[j++] = new_node(i, letters[i]);
+      array[j++] = new_node((char)i, letters[i]);
     }
   }
 
