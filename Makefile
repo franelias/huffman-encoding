@@ -16,6 +16,7 @@ valgrindD: main.c huffman.c huffman.h tree.c tree.h io.c io.h lists.c lists.h
 	- gcc main.c huffman.c tree.c io.c lists.c
 	- valgrind ./a.out D prueba.txt.hf
 
+<<<<<<< HEAD
 test: encode.c encode.h tree.c  decode.c decode.h common.c common.h tree.h io.c io.h lists.c lists.h tests_lists.c tests_tree.c tests_huffman_encode.c tests_huffman_decode.c
 	- gcc tests_tree.c tree.c -o test
 	- ./test
@@ -31,3 +32,16 @@ test: encode.c encode.h tree.c  decode.c decode.h common.c common.h tree.h io.c 
 
 
 	-rm -rf ./test
+=======
+test: huffman.c huffman.h tree.c tree.h io.c io.h lists.c lists.h tests_lists.c tests_tree.c tests_huffman.c
+	- gcc tests_tree.c tree.c -o test
+	- ./test
+	
+	- gcc tests_lists.c tree.c lists.c  -o test
+	- ./test
+
+	- gcc tests_huffman.c huffman.c tree.c lists.c -o test
+	- ./test
+
+	-rm -rf ./test
+>>>>>>> Test huffman encode
