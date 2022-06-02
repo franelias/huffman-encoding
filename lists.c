@@ -4,11 +4,7 @@
 #include <stdlib.h>
 
 List create_list() {
-  List newNode = malloc(sizeof(nodeList));
-  newNode->tree = NULL;
-  newNode->next = NULL;
-
-  return newNode;
+  return NULL;
 }
 
 void sorted_insert(List* head, List node) {
@@ -34,11 +30,13 @@ void push(List* list, TreeNode data) {
 }
 
 List array_to_list(TreeNode* array, int length) {
-  List listOfTrees = NULL;
+  List list = create_list();
+
   for (int i = length - 1; i >= 0; i--) {
-    push(&listOfTrees, array[i]);
+    push(&list, array[i]);
   }
-  return listOfTrees;
+  
+  return list;
 }
 
 void destroy_list(List list) {
