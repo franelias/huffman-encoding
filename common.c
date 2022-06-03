@@ -36,3 +36,9 @@ char* decoded_file_name(char* fileName) {
 
   return outputFileName;
 }
+
+void free_all(void** pointers, int amount) {
+  for (int i = 0; i < amount; i++) {
+    free(pointers[i]);
+  }
+}
