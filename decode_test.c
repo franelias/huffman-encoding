@@ -8,7 +8,8 @@
 #include "lists.h"
 #include "tree.h"
 
-List create_test_list() {
+List create_test_list()
+{
   List newList = NULL;
 
   TreeNode node1 = new_node('a', 3);
@@ -24,7 +25,8 @@ List create_test_list() {
   return newList;
 }
 
-void test_decode_text() {
+void test_decode_text()
+{
   // decodifico el codigo formado en test_encode_text y verifico que coincida con el texto original
   List list = create_test_list();
   TreeNode tree = generate_huffman_tree(list, 4);
@@ -33,18 +35,24 @@ void test_decode_text() {
   char *decodedText = decode_text("000000010101011010101010111111111111", 36, tree, finalSize);
   assert(*finalSize == 18);
   assert(strcmp(decodedText, "aaabbbbcccccdddddd") == 0);
+  free(decodedText);
+  free(finalSize);
+  destroy_tree(&tree);
 }
 
-void tets_decode_tree() {
+void tets_decode_tree()
+{
   // decodifico el arbol codificado en test_encode_tree y verifico que coincida con el arbol original
   TreeNode decodedTree = decode_tree_aux("0011011\nabcd");
   assert(decodedTree->left->left->letter == 'a');
   assert(decodedTree->left->right->letter == 'b');
   assert(decodedTree->right->left->letter == 'c');
   assert(decodedTree->right->right->letter == 'd');
+  destroy_tree(&decodedTree);
 }
 
-int main() {
+int main()
+{
   test_decode_text();
   tets_decode_tree();
   printf("Todos los tests pasaron\n");

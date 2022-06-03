@@ -153,7 +153,7 @@ char *encode_tree(TreeNode tree, int lettersAmount, int *encodedTreeLen)
   {
     encodedTree[strlen(serializedTree) + i] = letters[i];
   }
-  encodedTree[(*encodedTreeLen)++] = '\0';
+  encodedTree[(*encodedTreeLen)] = '\0';
 
   void *pointers[3] = {serializedTree, letters, lettersCount};
   free_all(pointers, 3);
@@ -206,7 +206,7 @@ void encode_file(char *file)
   char *encodedText = encode_text(fileContent, *contentLen, *encodedLen, paths);
   char *encodedTree = encode_tree(huffmanTree, *lettersAmount, encodedTreeLen);
 
-  generate_output_files(file, encodedText, encodedTree, *encodedLen, *encodedTreeLen);
+  generate_output_files(file, encodedText, encodedTree, *encodedLen, *encodedTreeLen + 1);
 
   void *pointers[8] = {contentLen, lettersAmount, encodedLen, encodedTreeLen, fileContent, nodesArray, encodedText, encodedTree};
   free_all(pointers, 8);

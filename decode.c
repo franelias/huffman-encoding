@@ -56,9 +56,9 @@ char *decode_text(char *encodedText, int encodedFileLength, TreeNode tree, int *
 {
   TreeNode root = tree;
 
-  char *decodedText = malloc(sizeof(char) + 2);
+  int size = 1024;
+  char *decodedText = malloc(sizeof(char) * size);
 
-  int size = 1;
   int tempSize = 0;
   for (int i = 0; i < encodedFileLength; i++)
   {

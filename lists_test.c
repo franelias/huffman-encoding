@@ -7,12 +7,14 @@
 
 #include "tree.h"
 
-void test_create_list() {
+void test_create_list()
+{
   List list = create_list();
   assert(list == NULL);
 }
 
-void test_push() {
+void test_push()
+{
   // test 1 pusheo a una lista vacia
   List list = NULL;
   TreeNode node1 = new_node('a', 1);
@@ -25,9 +27,11 @@ void test_push() {
   assert(list->next->next == NULL);
   assert(list->tree->letter == 'b' && list->tree->weight == 2);
   assert(list->next->tree->letter == 'a' && list->next->tree->weight == 1);
+  destroy_list(&list);
 }
 
-List test_array_to_list() {
+List test_array_to_list()
+{
   // test 1 array vacio
   TreeNode *array1 = NULL;
   List list1 = array_to_list(array1, 0);
@@ -38,6 +42,7 @@ List test_array_to_list() {
   List list2 = array_to_list(array2, 1);
   assert(list2->next == NULL);
   assert(list2->tree->letter == 'a' && list2->tree->weight == 1);
+  destroy_list(&list2);
   // test 2 array con dos elementos
   TreeNode *array3 = malloc(sizeof(TreeNode) * 2);
   array3[0] = new_node('a', 1);
@@ -46,9 +51,11 @@ List test_array_to_list() {
   assert(list3->next->next == NULL);
   assert(list3->tree->letter == 'a' && list3->tree->weight == 1);
   assert(list3->next->tree->letter == 'b' && list3->next->tree->weight == 2);
+  destroy_list(&list3);
 }
 
-void test_destroy_list() {
+void test_destroy_list()
+{
   // test 1 destruyo una lista vacia
   List list1 = NULL;
   destroy_list(&list1);
@@ -62,7 +69,8 @@ void test_destroy_list() {
   assert(list2 == NULL);
 }
 
-void test_remove_first() {
+void test_remove_first()
+{
   // test1 intento eliminar una lista vacia
   List list = NULL;
   remove_first(&list);
@@ -81,9 +89,11 @@ void test_remove_first() {
   remove_first(&list3);
   assert(list3->next == NULL);
   assert(list3->tree->letter == 'a' && list3->tree->weight == 1);
+  destroy_list(&list3);
 }
 
-void test_sorted_insert() {
+void test_sorted_insert()
+{
   // insertar en lista vacia
   List list1 = NULL;
   TreeNode node = new_node('a', 1);
@@ -131,7 +141,8 @@ void test_sorted_insert() {
   assert(list4->next->next->tree->letter == 'c' && list4->next->next->tree->weight == 4);
 }
 
-int main() {
+int main()
+{
   test_push();
   test_array_to_list();
   test_destroy_list();
