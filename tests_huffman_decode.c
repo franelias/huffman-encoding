@@ -48,6 +48,7 @@ void tets_decode_tree()
 int main()
 {
     test_decode_text();
+    tets_decode_tree();
     printf("Todos los tests pasaron\n");
     return 0;
 }
