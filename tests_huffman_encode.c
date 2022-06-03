@@ -5,7 +5,7 @@
 
 #include "lists.h"
 #include "tree.h"
-#include "huffman.h"
+#include "encode.h"
 
 List create_test_list()
 {
@@ -63,7 +63,7 @@ void test_encode_text()
   int *size = malloc(sizeof(int));
   *size = 0;
   find_letters_path(tree, "", paths, size);
-  char *encodedText = encode_text("aaabbbbcccccdddddd", 18, paths, *size);
+  char *encodedText = encode_text("aaabbbbcccccdddddd", 18, *size, paths);
   assert(strcmp(encodedText, "000000010101011010101010111111111111") == 0);
   assert(*size == 36);
 }
@@ -74,15 +74,11 @@ void test_encode_tree()
   TreeNode tree = generate_huffman_tree(list, 4);
   int *size = malloc(sizeof(int));
   *size = 0;
-  char *encodedTree = malloc(sizeof(char) * 8);
-  strcpy(encodedTree, "");
-  char *letters = malloc(sizeof(char) * 4);
-  strcpy(letters, "");
-  encode_tree(tree, encodedTree, letters, size);
+  char *encodedTree = encode_tree(tree, 4, size);
 
-  assert(strcmp(encodedTree, "0011011") == 0);
-  assert(strcmp(letters, "abcd") == 0);
-  assert(*size == 4);
+  assert(strcmp(encodedTree, "0011011\nabcd") == 0);
+
+  assert(*size == 11);
 }
 int main()
 {

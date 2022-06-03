@@ -16,17 +16,18 @@ valgrindD: main.c huffman.c huffman.h tree.c tree.h io.c io.h lists.c lists.h
 	- gcc main.c huffman.c tree.c io.c lists.c
 	- valgrind ./a.out D prueba.txt.hf
 
-test: huffman.c huffman.h tree.c tree.h io.c io.h lists.c lists.h tests_lists.c tests_tree.c tests_huffman_encode.c tests_huffman_decode.c
+test: encode.c encode.h tree.c  decode.c decode.h common.c common.h tree.h io.c io.h lists.c lists.h tests_lists.c tests_tree.c tests_huffman_encode.c tests_huffman_decode.c
 	- gcc tests_tree.c tree.c -o test
 	- ./test
 	
 	- gcc tests_lists.c tree.c lists.c  -o test
 	- ./test
-
-	- gcc tests_huffman_encode.c huffman.c tree.c lists.c -o test
+	
+	- gcc tests_huffman_encode.c encode.c tree.c lists.c  common.c io.c -o test
 	- ./test
 
-	- gcc tests_huffman_decode.c huffman.c tree.c lists.c -o test
+	- gcc tests_huffman_decode.c decode.c encode.c tree.c lists.c common.c io.c -o test
 	- ./test
+
 
 	-rm -rf ./test
