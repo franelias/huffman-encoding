@@ -34,14 +34,14 @@ void find_letters_path(TreeNode node, char prevPath[], char *paths[], int *encod
 char *encode_text(char *text, int textLen, int encodedLen, char *paths[]);
 
 /*
-    serialize_tree: TreeNode , char*, char*, int* -> void
+    serialize_tree: TreeNode char* char* int* -> void
     Esta es una funcion que dado un arbol, se encarga de codificar el arbol, guardar el orden las letras
     y la cantidad de las mismas
 */
 void serialize_tree(TreeNode tree, char *serializedTree, char *letters, int *lettersCount);
 
 /*
-    encode_tree: TreeNode, int, int* -> char*
+    encode_tree: TreeNode int int* -> char*
     A partir de un árbol devuelve un string con el arbol codificado y el valor de sus hojas juntos
     y guarda su largo
 */

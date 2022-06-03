@@ -18,7 +18,7 @@ TreeNode decode_tree(char *encodedTree, int *encodedTreePos, char *leafs, int *l
 TreeNode decode_tree_aux(char *encodedTree);
 
 /*
-    decode_text: char*, int, TreeNode, int* -> char*
+    decode_text: char* int TreeNode int* -> char*
     A partir de un texto codificado, su largo y su árbol de Huffman, decodifica el texto
     y guarda su largo en [decodedFileLen].
 */

@@ -7,22 +7,19 @@
 #include "lists.h"
 #include "tree.h"
 
-TreeNode generate_huffman_tree(List letters, int length)
-{
+TreeNode generate_huffman_tree(List letters, int length) {
   TreeNode newTree, huffmanTree;
   List firstNode, secondNode;
   int weight;
 
-  if (length == 1)
-  {
+  if (length == 1) {
     TreeNode dummyNode = new_node('\0', 0);
 
     push(&letters, dummyNode);
     length++;
   }
 
-  while (length > 1)
-  {
+  while (length > 1) {
     firstNode = letters;
     secondNode = letters->next;
 
@@ -49,22 +46,19 @@ TreeNode generate_huffman_tree(List letters, int length)
   return huffmanTree;
 }
 
-void find_letters_path(TreeNode node, char prevPath[], char *paths[], int *encodedLength)
-{
+void find_letters_path(TreeNode node, char prevPath[], char *paths[], int *encodedLength) {
   if (!node)
     return;
 
   char *newPath = malloc(sizeof(char) * strlen(prevPath) + 2);
 
   strcpy(newPath, prevPath);
-  if (node->left)
-  {
+  if (node->left) {
     strcat(newPath, "0");
     find_letters_path(node->left, newPath, paths, encodedLength);
   }
 
-  if (!node->left && !node->right)
-  {
+  if (!node->left && !node->right) {
     int pathLength = strlen(newPath);
 
     paths[(unsigned char)node->letter] = malloc(sizeof(char) * pathLength + 1);
@@ -75,28 +69,24 @@ void find_letters_path(TreeNode node, char prevPath[], char *paths[], int *encod
 
   strcpy(newPath, prevPath);
 
-  if (node->right)
-  {
+  if (node->right) {
     strcat(newPath, "1");
     find_letters_path(node->right, newPath, paths, encodedLength);
   }
   free(newPath);
 }
 
-char *encode_text(char *text, int textLen, int encodedLen, char *paths[])
-{
+char *encode_text(char *text, int textLen, int encodedLen, char *paths[]) {
   int pathsLength[256] = {0};
   int tempLength = 0;
 
   char *encodedText = malloc(sizeof(char) * encodedLen + 1);
   strcpy(encodedText, "");
 
-  for (int i = 0; i < textLen; i++)
-  {
+  for (int i = 0; i < textLen; i++) {
     strcpy(encodedText + tempLength, paths[(unsigned char)text[i]]);
 
-    if (pathsLength[(unsigned char)text[i]] == 0)
-    {
+    if (pathsLength[(unsigned char)text[i]] == 0) {
       pathsLength[(unsigned char)text[i]] = strlen(paths[(unsigned char)text[i]]);
     }
 
@@ -106,21 +96,16 @@ char *encode_text(char *text, int textLen, int encodedLen, char *paths[])
   return encodedText;
 }
 
-void serialize_tree(TreeNode tree, char *serializedTree, char *letters, int *lettersCount)
-{
-  if (tree == NULL)
-  {
+void serialize_tree(TreeNode tree, char *serializedTree, char *letters, int *lettersCount) {
+  if (tree == NULL) {
     return;
   }
 
-  if (tree->left == NULL && tree->right == NULL)
-  {
+  if (tree->left == NULL && tree->right == NULL) {
     strcat(serializedTree, "1");
 
     letters[(*lettersCount)++] = tree->letter;
-  }
-  else
-  {
+  } else {
     strcat(serializedTree, "0");
   }
 
@@ -128,11 +113,10 @@ void serialize_tree(TreeNode tree, char *serializedTree, char *letters, int *let
   serialize_tree(tree->right, serializedTree, letters, lettersCount);
 }
 
-char *encode_tree(TreeNode tree, int lettersAmount, int *encodedTreeLen)
-{
+char *encode_tree(TreeNode tree, int lettersAmount, int *encodedTreeLen) {
   int serializedTreeLen = lettersAmount * 2;
 
-  char *serializedTree = malloc(sizeof(char) * serializedTreeLen + 1); // cuanto es el largo del arbol
+  char *serializedTree = malloc(sizeof(char) * serializedTreeLen + 1);  // cuanto es el largo del arbol
   strcpy(serializedTree, "");
 
   char *letters = malloc(sizeof(char) * lettersAmount + 3);
@@ -149,8 +133,7 @@ char *encode_tree(TreeNode tree, int lettersAmount, int *encodedTreeLen)
   char *encodedTree = malloc(sizeof(char) * (*encodedTreeLen) + 2);
 
   strcpy(encodedTree, serializedTree);
-  for (int i = 0; i < *lettersCount + 1; i++)
-  {
+  for (int i = 0; i < *lettersCount + 1; i++) {
     encodedTree[strlen(serializedTree) + i] = letters[i];
   }
   encodedTree[(*encodedTreeLen)] = '\0';
@@ -161,8 +144,7 @@ char *encode_tree(TreeNode tree, int lettersAmount, int *encodedTreeLen)
   return encodedTree;
 }
 
-void generate_output_files(char *fileName, char *encodedText, char *encodedTree, int encodedTextLen, int encodedTreeLen)
-{
+void generate_output_files(char *fileName, char *encodedText, char *encodedTree, int encodedTextLen, int encodedTreeLen) {
   char *outputFileName = encoded_file_name(fileName);
   char *treeFileName = tree_file_name(fileName);
 
@@ -177,8 +159,7 @@ void generate_output_files(char *fileName, char *encodedText, char *encodedTree,
   free_all(pointers, 4);
 }
 
-void encode_file(char *file)
-{
+void encode_file(char *file) {
   int *contentLen = malloc(sizeof(int));
 
   char *fileContent = readfile(file, contentLen);
