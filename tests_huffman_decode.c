@@ -27,6 +27,7 @@ List create_test_list()
 
 void test_decode_text()
 {
+    // decodifico el codigo formado en test_encode_text y verifico que coincida con el texto original
     List list = create_test_list();
     TreeNode tree = generate_huffman_tree(list, 4);
     int *finalSize = malloc(sizeof(int));
@@ -38,6 +39,7 @@ void test_decode_text()
 
 void tets_decode_tree()
 {
+    // decodifico el arbol codificado en test_encode_tree y verifico que coincida con el arbol original
     TreeNode decodedTree = decode_tree_aux("0011011\nabcd");
     assert(decodedTree->left->left->letter == 'a');
     assert(decodedTree->left->right->letter == 'b');

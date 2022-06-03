@@ -42,6 +42,8 @@ void test_generate_huffman_tree()
 
 void test_find_letters_path()
 {
+  // creo un arbol de huffman y lo recorro para ver que se guarden correctamente los paths
+  // y el tamaño final que tendra el contenido del archivo codificado
   List list = create_test_list();
   TreeNode tree = generate_huffman_tree(list, 4);
   char *paths[256];
@@ -57,6 +59,7 @@ void test_find_letters_path()
 
 void test_encode_text()
 {
+  // codifico un texto y verifico que este correctamente codificado
   List list = create_test_list();
   TreeNode tree = generate_huffman_tree(list, 4);
   char *paths[256];
@@ -65,11 +68,12 @@ void test_encode_text()
   find_letters_path(tree, "", paths, size);
   char *encodedText = encode_text("aaabbbbcccccdddddd", 18, *size, paths);
   assert(strcmp(encodedText, "000000010101011010101010111111111111") == 0);
-  assert(*size == 36);
 }
 
 void test_encode_tree()
 {
+  // codifico el arbol y veo que este correctamente codificado
+  // y que sus hojas esten en el orden correcto, y que el tamaño final este correcto
   List list = create_test_list();
   TreeNode tree = generate_huffman_tree(list, 4);
   int *size = malloc(sizeof(int));
