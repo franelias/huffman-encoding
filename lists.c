@@ -35,16 +35,21 @@ List array_to_list(TreeNode* array, int length) {
   for (int i = length - 1; i >= 0; i--) {
     push(&list, array[i]);
   }
-  
+
   return list;
 }
 
-void destroy_list(List list) {
-  if (list) {
-    destroy_list(list->next);
-    if (list->tree)
-      destroy_tree(&(list->tree));
-    free(list);
+void destroy_list(List* list) {
+  if (*list) {
+    List next = (*list)->next;
+    destroy_list(&next);
+
+    TreeNode tree = (*list)->tree;
+    if (tree)
+      destroy_tree(&tree);
+
+    free(*list);
+    *list = NULL;
   }
 }
 
