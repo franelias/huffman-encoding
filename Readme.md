@@ -22,3 +22,9 @@ Para descomprimir deberemos correr el siguiente codigo
 ```
 ./huff D file.hf
 ```
+
+## Test
+Para correr los test:
+```
+make test
+```
