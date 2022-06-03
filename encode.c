@@ -12,6 +12,13 @@ TreeNode generate_huffman_tree(List letters, int length) {
   List firstNode, secondNode;
   int weight;
 
+  if (length == 1) {
+    TreeNode dummyNode = new_node('\0', 0);
+
+    push(&letters, dummyNode);
+    length++;
+  }
+
   while (length > 1) {
     firstNode = letters;
     secondNode = letters->next;
@@ -33,6 +40,7 @@ TreeNode generate_huffman_tree(List letters, int length) {
   }
 
   huffmanTree = letters->tree;
+
   free(letters);
 
   return huffmanTree;
@@ -120,7 +128,7 @@ char* encode_tree(TreeNode tree, int lettersAmount, int* encodedTreeLen) {
   serialize_tree(tree, serializedTree, letters, lettersCount);
   letters[*lettersCount] = '\0';
 
-  *encodedTreeLen = serializedTreeLen + lettersAmount;
+  *encodedTreeLen = serializedTreeLen + *lettersCount;
 
   char* encodedTree = malloc(sizeof(char) * (*encodedTreeLen) + 2);
 
@@ -128,7 +136,7 @@ char* encode_tree(TreeNode tree, int lettersAmount, int* encodedTreeLen) {
   for (int i = 0; i < *lettersCount + 1; i++) {
     encodedTree[strlen(serializedTree) + i] = letters[i];
   }
-  encodedTree[*encodedTreeLen + 1] = '\0';
+  encodedTree[*encodedTreeLen] = '\0';
 
   void* pointers[3] = {serializedTree, letters, lettersCount};
   free_all(pointers, 3);
@@ -168,6 +176,8 @@ void encode_file(char* file) {
   List treeList = array_to_list(nodesArray, *lettersAmount);
 
   TreeNode huffmanTree = generate_huffman_tree(treeList, *lettersAmount);
+
+  if (*lettersAmount == 1) (*lettersAmount)++;
 
   find_letters_path(huffmanTree, "", paths, encodedLen);
 
