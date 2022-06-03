@@ -17,9 +17,9 @@ int main(int argc, char** argv) {
   if (strcmp(argv[1], ENCODER_ALIAS) == 0) {
     encode_file(argv[2]);
   } else if (strcmp(argv[1], DECODER_ALIAS) == 0) {
-    decode_file("prueba.txt.hf");
+    decode_file(argv[2]);
   } else {
-    printf("Invalid arguments");
+    printf("Argumentos invalidos\n");
   }
 
   return 0;
