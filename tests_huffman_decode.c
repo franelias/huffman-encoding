@@ -5,7 +5,8 @@
 
 #include "lists.h"
 #include "tree.h"
-#include "huffman.h"
+#include "decode.h"
+#include "encode.h"
 
 List create_test_list()
 {
@@ -37,11 +38,7 @@ void test_decode_text()
 
 void tets_decode_tree()
 {
-    int *encodedTreePos = malloc(sizeof(int));
-    *encodedTreePos = 0;
-    int *leafPos = malloc(sizeof(int));
-    *leafPos = 0;
-    TreeNode decodedTree = decode_tree_aux("0011011\nabcd", encodedTreePos, leafPos);
+    TreeNode decodedTree = decode_tree_aux("0011011\nabcd");
     assert(decodedTree->left->left->letter == 'a');
     assert(decodedTree->left->right->letter == 'b');
     assert(decodedTree->right->left->letter == 'c');
