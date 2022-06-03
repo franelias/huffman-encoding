@@ -5,15 +5,21 @@
 void decode_file(char *file);
 
 /*
-    A partir de un texto codificado, el valor de las hojas y dos punteros a int que funcionaran como contadores
+    decode_tree : char*, int*, char*, int* -> TreeNode
+    A partir de un arbol codificado, el valor de las hojas
     arma y devuelve el arbol decoficado
 */
 TreeNode decode_tree(char *encodedTree, int *encodedTreePos, char *leafs, int *leafsPos);
-
+/*
+    decode_tree_aux: char* -> TreeNode
+    Funcion auxiliar intermedia que llamara a decode_tree con los datos que necesita
+*/
 TreeNode decode_tree_aux(char *encodedTree);
 
 /*
+    decode_text: char*, int, TreeNode, int* -> char*
     A partir de un texto codificado, su largo  y su arbol decodificado, decodifica el texto
+     y guarda su largo
 */
-char *decode_text(char *encodedText, int encodedFileLength, TreeNode tree, int *a);
+char *decode_text(char *encodedText, int encodedFileLength, TreeNode tree, int *decodedFileLen);
 #endif
