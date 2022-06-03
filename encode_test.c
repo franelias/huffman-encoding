@@ -7,8 +7,7 @@
 #include "lists.h"
 #include "tree.h"
 
-List create_test_list()
-{
+List create_test_list() {
   List newList = NULL;
 
   TreeNode node1 = new_node('a', 3);
@@ -24,8 +23,7 @@ List create_test_list()
   return newList;
 }
 
-void test_generate_huffman_tree()
-{
+void test_generate_huffman_tree() {
   List list = create_test_list();
   TreeNode huffmanTree = generate_huffman_tree(list, 4);
   //          18
@@ -40,8 +38,7 @@ void test_generate_huffman_tree()
   assert(huffmanTree->right->right->letter == 'd');
 }
 
-void test_find_letters_path()
-{
+void test_find_letters_path() {
   // creo un arbol de huffman y lo recorro para ver que se guarden correctamente los paths
   // y el tamaño final que tendra el contenido del archivo codificado
   List list = create_test_list();
@@ -57,8 +54,7 @@ void test_find_letters_path()
   assert(*size == 36);
 }
 
-void test_encode_text()
-{
+void test_encode_text() {
   // codifico un texto y verifico que este correctamente codificado
   List list = create_test_list();
   TreeNode tree = generate_huffman_tree(list, 4);
@@ -70,8 +66,7 @@ void test_encode_text()
   assert(strcmp(encodedText, "000000010101011010101010111111111111") == 0);
 }
 
-void test_encode_tree()
-{
+void test_encode_tree() {
   // codifico el arbol y veo que este correctamente codificado
   // y que sus hojas esten en el orden correcto, y que el tamaño final este correcto
   List list = create_test_list();
@@ -84,8 +79,7 @@ void test_encode_tree()
 
   assert(*size == 12);
 }
-int main()
-{
+int main() {
   test_generate_huffman_tree();
   test_find_letters_path();
   test_encode_text();
