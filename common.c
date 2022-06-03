@@ -2,8 +2,17 @@
 #include <stdlib.h>
 #include <string.h>
 
-char* original_name(char* fileName) {
-  char* originalName = malloc(sizeof(char) * strlen(fileName) - 2);
+void quit_file_error(char *fileName, char *fileContent, int *fileLength)
+{
+  printf("El archivo %s esta vacio \n", fileName);
+  free(fileLength);
+  free(fileContent);
+  exit(1);
+}
+
+char *original_name(char *fileName)
+{
+  char *originalName = malloc(sizeof(char) * strlen(fileName) - 2);
 
   strncpy(originalName, fileName, strlen(fileName) - 3);
   originalName[strlen(fileName) - 3] = '\0';
@@ -11,8 +20,9 @@ char* original_name(char* fileName) {
   return originalName;
 }
 
-char* encoded_file_name(char* fileName) {
-  char* outputFileName = malloc(sizeof(char) * strlen(fileName) + 4);
+char *encoded_file_name(char *fileName)
+{
+  char *outputFileName = malloc(sizeof(char) * strlen(fileName) + 4);
   strcpy(outputFileName, fileName);
 
   strcat(outputFileName, ".hf");
@@ -20,8 +30,9 @@ char* encoded_file_name(char* fileName) {
   return outputFileName;
 }
 
-char* tree_file_name(char* fileName) {
-  char* treeFileName = malloc(sizeof(char) * strlen(fileName) + 6);
+char *tree_file_name(char *fileName)
+{
+  char *treeFileName = malloc(sizeof(char) * strlen(fileName) + 6);
   strcpy(treeFileName, fileName);
 
   strcat(treeFileName, ".tree");
@@ -29,8 +40,9 @@ char* tree_file_name(char* fileName) {
   return treeFileName;
 }
 
-char* decoded_file_name(char* fileName) {
-  char* outputFileName = malloc(sizeof(char) * strlen(fileName) + 5);
+char *decoded_file_name(char *fileName)
+{
+  char *outputFileName = malloc(sizeof(char) * strlen(fileName) + 5);
   strcpy(outputFileName, fileName);
 
   strcat(outputFileName, ".dec");
@@ -39,8 +51,10 @@ char* decoded_file_name(char* fileName) {
   return outputFileName;
 }
 
-void free_all(void** pointers, int amount) {
-  for (int i = 0; i < amount; i++) {
+void free_all(void **pointers, int amount)
+{
+  for (int i = 0; i < amount; i++)
+  {
     free(pointers[i]);
   }
 }

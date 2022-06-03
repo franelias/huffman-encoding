@@ -1,5 +1,12 @@
 # Huffman
 
+# Compilar el proyecto
+Para compilar el proyecto basta con hacer
+```
+make huffman
+```
+Siempre y cuando se tenga instalado make
+
 ## Comprimir
 
 Para comprimir deberemos correr el siguiente codigo

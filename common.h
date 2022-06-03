@@ -1,5 +1,10 @@
 #ifndef __COMMON_H_
 #define __COMMON_H_
+/*
+    quit_file_error: char*, char*, int*
+    Funcion que hace libera los punteros, y hace exit
+*/
+void quit_file_error(char *fileName, char *fileContent, int *fileLength);
 
 /*
     original_name: char* -> char*
