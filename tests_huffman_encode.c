@@ -7,7 +7,8 @@
 #include "lists.h"
 #include "tree.h"
 
-List create_test_list() {
+List create_test_list()
+{
   List newList = NULL;
 
   TreeNode node1 = new_node('a', 3);
@@ -23,7 +24,8 @@ List create_test_list() {
   return newList;
 }
 
-void test_generate_huffman_tree() {
+void test_generate_huffman_tree()
+{
   List list = create_test_list();
   TreeNode huffmanTree = generate_huffman_tree(list, 4);
   //          18
@@ -38,7 +40,8 @@ void test_generate_huffman_tree() {
   assert(huffmanTree->right->right->letter == 'd');
 }
 
-void test_find_letters_path() {
+void test_find_letters_path()
+{
   List list = create_test_list();
   TreeNode tree = generate_huffman_tree(list, 4);
   char *paths[256];
@@ -52,7 +55,8 @@ void test_find_letters_path() {
   assert(*size == 36);
 }
 
-void test_encode_text() {
+void test_encode_text()
+{
   List list = create_test_list();
   TreeNode tree = generate_huffman_tree(list, 4);
   char *paths[256];
@@ -64,7 +68,8 @@ void test_encode_text() {
   assert(*size == 36);
 }
 
-void test_encode_tree() {
+void test_encode_tree()
+{
   List list = create_test_list();
   TreeNode tree = generate_huffman_tree(list, 4);
   int *size = malloc(sizeof(int));
@@ -73,9 +78,10 @@ void test_encode_tree() {
 
   assert(strcmp(encodedTree, "0011011\nabcd") == 0);
 
-  assert(*size == 11);
+  assert(*size == 12);
 }
-int main() {
+int main()
+{
   test_generate_huffman_tree();
   test_find_letters_path();
   test_encode_text();
