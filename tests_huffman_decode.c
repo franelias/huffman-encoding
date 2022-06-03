@@ -31,7 +31,7 @@ void test_decode_text()
     TreeNode tree = generate_huffman_tree(list, 4);
     int *finalSize = malloc(sizeof(int));
     *finalSize = 0;
-    char *decodedText = decode_text("000000010101011010101010111111111111", 37, tree, finalSize);
+    char *decodedText = decode_text("000000010101011010101010111111111111", 36, tree, finalSize);
     assert(*finalSize == 18);
     assert(strcmp(decodedText, "aaabbbbcccccdddddd") == 0);
 }
