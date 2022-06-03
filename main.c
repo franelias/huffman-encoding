@@ -10,19 +10,17 @@
 #define DECODER_ALIAS "D"
 
 int main(int argc, char** argv) {
-  encode_file("rock.jpeg");
-  decode_file("rock.jpeg.hf");
-  // if (argc < 3) {
-  //   exit(1);
-  // }
+  if (argc < 3) {
+    exit(1);
+  }
 
-  // if (strcmp(argv[1], ENCODER_ALIAS) == 0) {
-  //   encoder(argv[2]);
-  // } else if (strcmp(argv[1], DECODER_ALIAS) == 0) {
-  //   decoder("prueba.txt.hf");
-  // } else {
-  //   printf("Invalid arguments");
-  // }
+  if (strcmp(argv[1], ENCODER_ALIAS) == 0) {
+    encode_file(argv[2]);
+  } else if (strcmp(argv[1], DECODER_ALIAS) == 0) {
+    decode_file("prueba.txt.hf");
+  } else {
+    printf("Invalid arguments");
+  }
 
   return 0;
 }

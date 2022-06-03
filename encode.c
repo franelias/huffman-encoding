@@ -106,32 +106,32 @@ void serialize_tree(TreeNode tree, char* serializedTree, char* letters, int* let
 }
 
 char* encode_tree(TreeNode tree, int lettersAmount, int* encodedTreeLen) {
-  int serializedTreeLen = lettersAmount * 2 - 1;
+  int serializedTreeLen = lettersAmount * 2;
 
-  char* serializedTree = malloc(sizeof(char) * serializedTreeLen);  // cuanto es el largo del arbol
+  char* serializedTree = malloc(sizeof(char) * serializedTreeLen + 1);  // cuanto es el largo del arbol
   strcpy(serializedTree, "");
 
-  char* letters = malloc(sizeof(char) * lettersAmount);
+  char* letters = malloc(sizeof(char) * lettersAmount + 3);
   strcpy(letters, "\n");
 
   int* lettersCount = malloc(sizeof(int));
   *lettersCount = 1;
 
   serialize_tree(tree, serializedTree, letters, lettersCount);
+  letters[*lettersCount] = '\0';
 
   *encodedTreeLen = serializedTreeLen + lettersAmount;
 
-  char* encodedTree = malloc(sizeof(char) * (*encodedTreeLen) + 1);
+  char* encodedTree = malloc(sizeof(char) * (*encodedTreeLen) + 2);
 
   strcpy(encodedTree, serializedTree);
   for (int i = 0; i < *lettersCount + 1; i++) {
     encodedTree[strlen(serializedTree) + i] = letters[i];
   }
-
   encodedTree[*encodedTreeLen + 1] = '\0';
 
-  free(serializedTree);
-  free(letters);
+  void* pointers[3] = {serializedTree, letters, lettersCount};
+  free_all(pointers, 3);
 
   return encodedTree;
 }
@@ -147,14 +147,8 @@ void generate_output_files(char* fileName, char* encodedText, char* encodedTree,
   writefile(outputFileName, implodedText, *implodedTextLen);
   writefile(treeFileName, encodedTree, encodedTreeLen);
 
-  free(outputFileName);
-  free(treeFileName);
-  free(implodedText);
-  free(implodedTextLen);
-
-  // void* pointers[4] = {outputFileName, treeFileName, implodedText, implodedTextLen};
-
-  // free_all(pointers, 4);
+  void* pointers[4] = {outputFileName, treeFileName, implodedTextLen, implodedText};
+  free_all(pointers, 4);
 }
 
 void encode_file(char* file) {
@@ -182,17 +176,8 @@ void encode_file(char* file) {
 
   generate_output_files(file, encodedText, encodedTree, *encodedLen, *encodedTreeLen + 1);
 
-  // free(contentLen);
-  // free(lettersAmount);
-  // free(encodedLen);
-  // free(encodedTreeLen);
-  // free(fileContent);
-  // free(nodesArray);
-
-  // destroy_tree(&huffmanTree);
-
-  // void *pointers[7] = {fileContent, contentLength, encodedText, encodedTree, lettersInOrder, lettersAmount, encodedTreeWithLetters};
-
-  // free_all(pointers, 7);
-  // free_all((void **)paths, 256);
+  void* pointers[8] = {contentLen, lettersAmount, encodedLen, encodedTreeLen, fileContent, nodesArray, encodedText, encodedTree};
+  free_all(pointers, 8);
+  free_all((void**)paths, 256);
+  destroy_tree(&huffmanTree);
 }

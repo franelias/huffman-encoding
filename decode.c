@@ -41,6 +41,7 @@ TreeNode decode_tree_aux(char* encodedTree) {
 
   TreeNode decodedTree = decode_tree(encodedTree, encodedTreePos, encodedTree + i, leafsPos);
   free(encodedTreePos);
+  free(leafsPos);
 
   return decodedTree;
 }
@@ -53,6 +54,12 @@ char* decode_text(char* encodedText, int encodedFileLength, TreeNode tree, int* 
   int size = 1;
   int tempSize = 0;
   for (int i = 0; i < encodedFileLength; i++) {
+    if (encodedText[i] == '0') {
+      tree = tree->left;
+    } else {
+      tree = tree->right;
+    }
+
     if (tree->left == NULL && tree->right == NULL) {
       if (size <= tempSize + 1) {
         size = (int)((tempSize + 2) * 1.5);
@@ -62,12 +69,6 @@ char* decode_text(char* encodedText, int encodedFileLength, TreeNode tree, int* 
       decodedText[tempSize++] = tree->letter;
 
       tree = root;
-    }
-
-    if (encodedText[i] == '0') {
-      tree = tree->left;
-    } else {
-      tree = tree->right;
     }
   }
 
@@ -96,16 +97,13 @@ void decode_file(char* file) {
 
   char* decodedText = decode_text(encodedFile, *encodedFileLen, decodedTree, decodedFileLen);
 
-  writefile(decoded_file_name(originalName), decodedText, *decodedFileLen);
+  char* decodedFileName = decoded_file_name(originalName);
 
-  // char* decodedTree;
-  // char* leafs;
+  writefile(decodedFileName, decodedText, *decodedFileLen);
 
-  // int* decodedFileLength = malloc(sizeof(int));
+  destroy_tree(&decodedTree);
 
-  // destroy_tree(&decodedTreeWL);
+  void* pointers[11] = {implodedFileLen, encodedFileLen, decodedFileLen, encodedTreeLen, originalName, treeFileName, implodedFile, encodedTree, encodedFile, decodedText, decodedFileName};
 
-  // void* pointers[11] = {implodedFileLength, encodedTreeLength, encodedFileLength, implodedFile, encodedFile, decodedTree, contador1, contador2, decodedText, treeFileName};
-
-  // free_all(pointers, 11);
+  free_all(pointers, 11);
 }

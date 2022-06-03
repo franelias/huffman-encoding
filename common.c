@@ -3,9 +3,10 @@
 #include <string.h>
 
 char* original_name(char* fileName) {
-  char* originalName = malloc(sizeof(char) * strlen(fileName) - 3);
+  char* originalName = malloc(sizeof(char) * strlen(fileName) - 2);
 
   strncpy(originalName, fileName, strlen(fileName) - 3);
+  originalName[strlen(fileName) - 3] = '\0';
 
   return originalName;
 }
@@ -20,7 +21,7 @@ char* encoded_file_name(char* fileName) {
 }
 
 char* tree_file_name(char* fileName) {
-  char* treeFileName = malloc(sizeof(char) * strlen(fileName) + 7);
+  char* treeFileName = malloc(sizeof(char) * strlen(fileName) + 6);
   strcpy(treeFileName, fileName);
 
   strcat(treeFileName, ".tree");
@@ -29,10 +30,11 @@ char* tree_file_name(char* fileName) {
 }
 
 char* decoded_file_name(char* fileName) {
-  char* outputFileName = malloc(sizeof(char) * strlen(fileName) + 4);
+  char* outputFileName = malloc(sizeof(char) * strlen(fileName) + 5);
   strcpy(outputFileName, fileName);
 
   strcat(outputFileName, ".dec");
+  outputFileName[strlen(fileName) + 4] = '\0';
 
   return outputFileName;
 }
