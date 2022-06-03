@@ -62,6 +62,16 @@ char *decode_text(char *encodedText, int encodedFileLength, TreeNode tree, int *
   int tempSize = 0;
   for (int i = 0; i < encodedFileLength; i++)
   {
+
+    if (encodedText[i] == '0')
+    {
+      tree = tree->left;
+    }
+    else
+    {
+      tree = tree->right;
+    }
+
     if (tree->left == NULL && tree->right == NULL)
     {
       if (size <= tempSize + 1)
@@ -73,15 +83,6 @@ char *decode_text(char *encodedText, int encodedFileLength, TreeNode tree, int *
       decodedText[tempSize++] = tree->letter;
 
       tree = root;
-    }
-
-    if (encodedText[i] == '0')
-    {
-      tree = tree->left;
-    }
-    else
-    {
-      tree = tree->right;
     }
   }
 
